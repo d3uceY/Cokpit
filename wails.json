@@ -9,5 +9,12 @@
   "author": {
     "name": "d3uceY",
     "email": "onyekwelujesse1234@gmail.com"
+  },
+  "info": {
+    "companyName": "d3uceY",
+    "productName": "Cokpit",
+    "productVersion": "0.1.0",
+    "copyright": "Copyright © 2026 d3uceY",
+    "comments": "Built using Wails (https://wails.io)"
   }
 }
