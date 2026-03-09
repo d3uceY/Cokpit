@@ -1,4 +1,4 @@
-module Orkestr
+module Cokpit
 
 go 1.23
 
