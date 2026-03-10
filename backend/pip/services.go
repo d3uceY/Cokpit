@@ -7,6 +7,14 @@ import (
 	"strings"
 )
 
+// OutdatedPackage represents a pip package that has a newer version available.
+type OutdatedPackage struct {
+	Name          string `json:"name"`
+	Version       string `json:"version"`
+	LatestVersion string `json:"latestVersion"`
+	BumpType      string `json:"bumpType"` // "major" | "minor" | "patch"
+}
+
 // Package represents an installed pip package with its metadata.
 type Package struct {
 	Name          string `json:"name"`
@@ -28,9 +36,50 @@ type pipOutdatedEntry struct {
 	LatestFileType string `json:"latest_filetype"`
 }
 
+// pip returns an exec.Cmd that runs python -m pip with the given arguments.
+// Using "python -m pip" ensures pip is found even when it is not on PATH directly.
+func pip(args ...string) *exec.Cmd {
+	return exec.Command("python", append([]string{"-m", "pip"}, args...)...)
+}
+
+// GetOutdatedPackages returns packages that have a newer version available on PyPI.
+func GetOutdatedPackages() ([]OutdatedPackage, error) {
+	out, err := pip("list", "--outdated", "--format=json").Output()
+	if err != nil {
+		return nil, fmt.Errorf("pip list --outdated failed: %w", err)
+	}
+	var entries []pipOutdatedEntry
+	if err := json.Unmarshal(out, &entries); err != nil {
+		return nil, fmt.Errorf("failed to parse pip list --outdated output: %w", err)
+	}
+	packages := make([]OutdatedPackage, len(entries))
+	for i, e := range entries {
+		packages[i] = OutdatedPackage{
+			Name:          e.Name,
+			Version:       e.Version,
+			LatestVersion: e.LatestVersion,
+			BumpType:      classifyBump(e.Version, e.LatestVersion),
+		}
+	}
+	return packages, nil
+}
+
+// classifyBump returns "major", "minor", or "patch" based on semver segment changes.
+func classifyBump(current, latest string) string {
+	cp := strings.SplitN(current, ".", 3)
+	lp := strings.SplitN(latest, ".", 3)
+	if len(cp) > 0 && len(lp) > 0 && cp[0] != lp[0] {
+		return "major"
+	}
+	if len(cp) > 1 && len(lp) > 1 && cp[1] != lp[1] {
+		return "minor"
+	}
+	return "patch"
+}
+
 // GetInstalledPackages returns all installed pip packages with version and update status.
 func GetInstalledPackages() ([]Package, error) {
-	installedOut, err := exec.Command("pip", "list", "--format=json").Output()
+	installedOut, err := pip("list", "--format=json").Output()
 	if err != nil {
 		return nil, fmt.Errorf("pip list failed: %w", err)
 	}
@@ -40,7 +89,7 @@ func GetInstalledPackages() ([]Package, error) {
 		return nil, fmt.Errorf("failed to parse pip list output: %w", err)
 	}
 
-	outdatedOut, _ := exec.Command("pip", "list", "--outdated", "--format=json").Output()
+	outdatedOut, _ := pip("list", "--outdated", "--format=json").Output()
 	var outdated []pipOutdatedEntry
 	json.Unmarshal(outdatedOut, &outdated)
 
@@ -92,8 +141,7 @@ func batchGetSummaries(names []string) map[string]string {
 			end = len(names)
 		}
 		batch := names[i:end]
-		args := append([]string{"show"}, batch...)
-		out, err := exec.Command("pip", args...).Output()
+		out, err := pip(append([]string{"show"}, batch...)...).Output()
 		if err != nil {
 			continue
 		}
@@ -127,7 +175,7 @@ func parsePipShow(output string) map[string]string {
 
 // InstallPackage installs a pip package by name.
 func InstallPackage(name string) error {
-	cmd := exec.Command("pip", "install", name)
+	cmd := pip("install", name)
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		return fmt.Errorf("pip install failed: %s", strings.TrimSpace(string(out)))
@@ -137,7 +185,7 @@ func InstallPackage(name string) error {
 
 // UninstallPackage removes a pip package by name.
 func UninstallPackage(name string) error {
-	cmd := exec.Command("pip", "uninstall", "-y", name)
+	cmd := pip("uninstall", "-y", name)
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		return fmt.Errorf("pip uninstall failed: %s", strings.TrimSpace(string(out)))
@@ -147,7 +195,7 @@ func UninstallPackage(name string) error {
 
 // UpgradePackage upgrades a pip package to its latest version.
 func UpgradePackage(name string) error {
-	cmd := exec.Command("pip", "install", "--upgrade", name)
+	cmd := pip("install", "--upgrade", name)
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		return fmt.Errorf("pip upgrade failed: %s", strings.TrimSpace(string(out)))

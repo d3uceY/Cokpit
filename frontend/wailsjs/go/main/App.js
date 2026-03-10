@@ -6,6 +6,10 @@ export function GetInstalledPackages() {
   return window['go']['main']['App']['GetInstalledPackages']();
 }
 
+export function GetOutdatedPackages() {
+  return window['go']['main']['App']['GetOutdatedPackages']();
+}
+
 export function Greet(arg1) {
   return window['go']['main']['App']['Greet'](arg1);
 }

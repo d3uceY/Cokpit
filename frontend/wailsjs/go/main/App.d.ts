@@ -4,6 +4,8 @@ import {pip} from '../models';
 
 export function GetInstalledPackages():Promise<Array<pip.Package>>;
 
+export function GetOutdatedPackages():Promise<Array<pip.OutdatedPackage>>;
+
 export function Greet(arg1:string):Promise<string>;
 
 export function InstallPackage(arg1:string):Promise<void>;

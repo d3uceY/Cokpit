@@ -28,6 +28,11 @@ func (a *App) Greet(name string) string {
 	return fmt.Sprintf("Hello %s, It's show time!", name)
 }
 
+// GetOutdatedPackages returns packages that have a newer version available.
+func (a *App) GetOutdatedPackages() ([]pip.OutdatedPackage, error) {
+	return pip.GetOutdatedPackages()
+}
+
 // GetInstalledPackages returns all installed pip packages with version and update status.
 func (a *App) GetInstalledPackages() ([]pip.Package, error) {
 	return pip.GetInstalledPackages()

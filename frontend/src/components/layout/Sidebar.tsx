@@ -5,7 +5,7 @@ const navItems = [
   { to: '/', label: 'Overview', icon: 'dashboard', exact: true },
   { to: '/packages', label: 'Packages', icon: 'inventory_2' },
   { to: '/search', label: 'Search PyPI', icon: 'search' },
-  { to: '/updates', label: 'Updates', icon: 'update', badge: 5 },
+  { to: '/updates', label: 'Updates', icon: 'update' },
   { to: '/cleanup', label: 'Cleanup', icon: 'cleaning_services' },
   { to: '/environment', label: 'Environment', icon: 'hub' },
 ]
@@ -19,9 +19,10 @@ const systemItems = [
 interface SidebarProps {
   isDark: boolean
   onToggleTheme: () => void
+  updateCount: number
 }
 
-export function Sidebar({ isDark, onToggleTheme }: SidebarProps) {
+export function Sidebar({ isDark, onToggleTheme, updateCount }: SidebarProps) {
   return (
     <aside className="w-64 border-r border-black/10 dark:border-white/10 bg-[#f5f7f8] dark:bg-[#0f1723] flex flex-col fixed h-full z-10">
       {/* Brand */}
@@ -53,9 +54,9 @@ export function Sidebar({ isDark, onToggleTheme }: SidebarProps) {
           >
             <span className="material-symbols-outlined text-xl leading-none">{item.icon}</span>
             <span>{item.label}</span>
-            {item.badge != null && (
+            {item.to === '/updates' && updateCount > 0 && (
               <span className="ml-auto bg-[#0048ad]/15 text-[#0048ad] dark:bg-[#0048ad]/30 dark:text-blue-300 text-[10px] px-1.5 py-0.5 font-bold leading-none">
-                {item.badge}
+                {updateCount}
               </span>
             )}
           </NavLink>
