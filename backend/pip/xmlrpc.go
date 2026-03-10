@@ -10,8 +10,8 @@ import (
 
 // xmlValue is a recursive XML-RPC value node.
 type xmlValue struct {
-	String  string     `xml:"string"`
-	Int     string     `xml:"int"`
+	String  string      `xml:"string"`
+	Int     string      `xml:"int"`
 	Structs []xmlMember `xml:"struct>member"`
 	Array   []xmlValue  `xml:"array>data>value"`
 }

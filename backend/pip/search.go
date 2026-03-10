@@ -72,11 +72,11 @@ func fetchExactMatch(name string) ([]SearchResult, error) {
 
 	var payload struct {
 		Info struct {
-			Name        string `json:"name"`
-			Version     string `json:"version"`
-			Summary     string `json:"summary"`
-			Author      string `json:"author"`
-			HomePage    string `json:"home_page"`
+			Name        string            `json:"name"`
+			Version     string            `json:"version"`
+			Summary     string            `json:"summary"`
+			Author      string            `json:"author"`
+			HomePage    string            `json:"home_page"`
 			ProjectURLs map[string]string `json:"project_urls"`
 		} `json:"info"`
 	}
