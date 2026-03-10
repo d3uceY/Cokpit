@@ -1,3 +1,9 @@
+import { useEffect, useState, useCallback } from 'react'
+import { useOutletContext } from 'react-router-dom'
+import { GetInstalledPackages, GetOutdatedPackages, GetPythonInfo, UpgradePackage } from '../../wailsjs/go/main/App'
+import type { pip } from '../../wailsjs/go/models'
+import type { AppOutletContext } from '../components/layout/AppLayout'
+
 const recentActivity = [
   { id: 1, name: 'numpy', version: '1.26.4', action: 'upgrade', status: 'success' as const, time: '5M AGO' },
   { id: 2, name: 'requests', version: '2.31.0', action: 'install', status: 'success' as const, time: '1H AGO' },
@@ -11,6 +17,57 @@ const statusBadge = {
 }
 
 export default function Dashboard() {
+  const { setUpdateCount } = useOutletContext<AppOutletContext>()
+
+  const [packages, setPackages] = useState<pip.Package[]>([])
+  const [outdated, setOutdated] = useState<pip.OutdatedPackage[]>([])
+  const [pythonInfo, setPythonInfo] = useState<pip.PythonInfo | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [upgradingAll, setUpgradingAll] = useState(false)
+  const [lastSync, setLastSync] = useState(new Date())
+
+  const load = useCallback(async () => {
+    setLoading(true)
+    try {
+      const [pkgs, out, info] = await Promise.all([
+        GetInstalledPackages(),
+        GetOutdatedPackages(),
+        GetPythonInfo(),
+      ])
+      setPackages(pkgs ?? [])
+      setOutdated(out ?? [])
+      setPythonInfo(info)
+      setUpdateCount((out ?? []).length)
+      setLastSync(new Date())
+    } finally {
+      setLoading(false)
+    }
+  }, [setUpdateCount])
+
+  useEffect(() => { load() }, [load])
+
+  const handleUpgradeAll = async () => {
+    setUpgradingAll(true)
+    try {
+      await Promise.all(outdated.map((p) => UpgradePackage(p.name)))
+      await load()
+    } finally {
+      setUpgradingAll(false)
+    }
+  }
+
+  // Compute update priority breakdown from bump types
+  const majorCount = outdated.filter((p) => p.bumpType === 'major').length
+  const minorCount = outdated.filter((p) => p.bumpType === 'minor').length
+  const total = outdated.length || 1
+  const majorPct = Math.round((majorCount / total) * 100)
+  const minorPct = Math.round((minorCount / total) * 100)
+  const patchPct = 100 - majorPct - minorPct
+
+  const Skeleton = ({ className }: { className?: string }) => (
+    <div className={`animate-pulse bg-black/10 dark:bg-white/10 ${className ?? ''}`} />
+  )
+
   return (
     <div className="flex flex-col min-h-screen">
       {/* Header */}
@@ -23,12 +80,23 @@ export default function Dashboard() {
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <button className="px-4 py-2 border border-black/15 dark:border-white/10 text-xs font-bold uppercase tracking-widest hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
-            Refresh
+          <button
+            onClick={load}
+            disabled={loading}
+            className="px-4 py-2 border border-black/15 dark:border-white/10 text-xs font-bold uppercase tracking-widest hover:bg-black/5 dark:hover:bg-white/5 transition-colors disabled:opacity-60"
+          >
+            {loading ? 'Loading…' : 'Refresh'}
           </button>
-          <button className="px-4 py-2 bg-[#0048ad] text-white text-xs font-bold uppercase tracking-widest hover:brightness-110 transition-colors">
-            Update All (5)
-          </button>
+          {outdated.length > 0 && (
+            <button
+              onClick={handleUpgradeAll}
+              disabled={upgradingAll}
+              className="px-4 py-2 bg-[#0048ad] text-white text-xs font-bold uppercase tracking-widest hover:brightness-110 transition-colors disabled:opacity-60 flex items-center gap-2"
+            >
+              {upgradingAll && <span className="material-symbols-outlined text-sm animate-spin">progress_activity</span>}
+              Update All ({outdated.length})
+            </button>
+          )}
         </div>
       </header>
 
@@ -36,20 +104,21 @@ export default function Dashboard() {
       <div className="p-8 space-y-8 max-w-7xl w-full">
         {/* Stats Row */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Installed count */}
           <div className="border border-black/15 dark:border-white/10 p-6 flex flex-col justify-between bg-white dark:bg-white/5">
             <div className="flex justify-between items-start">
               <span className="text-[10px] font-black uppercase tracking-widest text-[#0f1723]/40 dark:text-white/40">Installed Packages</span>
               <span className="material-symbols-outlined text-[#0f1723]/30 dark:text-white/30">inventory_2</span>
             </div>
             <div className="mt-4">
-              <span className="text-5xl font-black tracking-tighter">47</span>
-              <div className="flex items-center gap-1 mt-1">
-                <span className="material-symbols-outlined text-sm text-emerald-500">trending_up</span>
-                <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase">+3 This Week</span>
-              </div>
+              {loading
+                ? <Skeleton className="h-12 w-24 rounded" />
+                : <span className="text-5xl font-black tracking-tighter">{packages.length}</span>
+              }
             </div>
           </div>
 
+          {/* Outdated count */}
           <div className="border border-black/15 dark:border-white/10 p-6 flex flex-col justify-between bg-white dark:bg-white/5 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-1 bg-[#0048ad] h-full"></div>
             <div className="flex justify-between items-start">
@@ -57,27 +126,32 @@ export default function Dashboard() {
               <span className="material-symbols-outlined text-[#0048ad]">download</span>
             </div>
             <div className="mt-4">
-              <span className="text-5xl font-black tracking-tighter text-[#0048ad]">5</span>
-              <div className="flex items-center gap-1 mt-1">
-                <span className="material-symbols-outlined text-sm text-red-500">warning</span>
-                <span className="text-[10px] font-bold text-red-600 dark:text-red-400 uppercase">1 Security CVE</span>
-              </div>
+              {loading
+                ? <Skeleton className="h-12 w-16 rounded" />
+                : <span className="text-5xl font-black tracking-tighter text-[#0048ad]">{outdated.length}</span>
+              }
             </div>
           </div>
 
+          {/* Python runtime */}
           <div className="border border-black/15 dark:border-white/10 p-6 flex flex-col justify-between bg-white dark:bg-white/5">
             <div className="flex justify-between items-start">
               <span className="text-[10px] font-black uppercase tracking-widest text-[#0f1723]/40 dark:text-white/40">Python Runtime</span>
               <span className="material-symbols-outlined text-[#0f1723]/30 dark:text-white/30">data_object</span>
             </div>
             <div className="mt-4">
-              <span className="text-3xl font-black tracking-tighter">3.12.1</span>
-              <div className="flex items-center gap-3 mt-2">
-                <div className="flex items-center gap-1">
-                  <div className="w-2 h-2 bg-[#0048ad]"></div>
-                  <span className="text-[10px] font-bold uppercase tracking-tighter">pip 24.0</span>
-                </div>
-              </div>
+              {loading || !pythonInfo
+                ? <Skeleton className="h-9 w-28 rounded" />
+                : (
+                  <>
+                    <span className="text-3xl font-black tracking-tighter">{pythonInfo.pythonVersion}</span>
+                    <div className="flex items-center gap-1 mt-2">
+                      <div className="w-2 h-2 bg-[#0048ad]"></div>
+                      <span className="text-[10px] font-bold uppercase tracking-tighter">pip {pythonInfo.pipVersion}</span>
+                    </div>
+                  </>
+                )
+              }
             </div>
           </div>
         </div>
@@ -146,17 +220,6 @@ export default function Dashboard() {
                       <p className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold uppercase">Connected</p>
                     </div>
                   </div>
-                  <div className="text-[10px] font-mono text-[#0f1723]/40 dark:text-white/40">45ms</div>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-[#0f1723]/30 dark:text-white/30">storage</span>
-                    <div>
-                      <p className="text-xs font-bold uppercase tracking-tight">pip cache</p>
-                      <p className="text-[10px] text-[#0f1723]/40 dark:text-white/40 font-bold uppercase">842 MB used</p>
-                    </div>
-                  </div>
-                  <div className="text-[10px] font-mono text-[#0f1723]/40 dark:text-white/40">—</div>
                 </div>
               </div>
             </div>
@@ -166,25 +229,20 @@ export default function Dashboard() {
               <h2 className="text-sm font-black uppercase tracking-widest mb-4">Update Priority</h2>
               <div className="space-y-3">
                 {[
-                  { label: 'Security Fix', pct: 20, color: 'bg-red-500' },
-                  { label: 'Feature Updates', pct: 60, color: 'bg-[#0048ad]' },
-                  { label: 'Patch / Minor', pct: 20, color: 'bg-[#0f1723]/20 dark:bg-white/20' },
+                  { label: 'Major', pct: majorPct, color: 'bg-red-500' },
+                  { label: 'Minor', pct: minorPct, color: 'bg-[#0048ad]' },
+                  { label: 'Patch', pct: patchPct, color: 'bg-[#0f1723]/20 dark:bg-white/20' },
                 ].map((bar) => (
                   <div key={bar.label}>
                     <div className="flex justify-between items-end mb-1">
                       <span className="text-[10px] font-bold uppercase tracking-widest">{bar.label}</span>
-                      <span className="text-xs font-black">{bar.pct}%</span>
+                      <span className="text-xs font-black">{outdated.length === 0 ? '—' : `${bar.pct}%`}</span>
                     </div>
                     <div className="w-full h-1 bg-black/5 dark:bg-white/5">
                       <div className={`${bar.color} h-full`} style={{ width: `${bar.pct}%` }}></div>
                     </div>
                   </div>
                 ))}
-              </div>
-              <div className="mt-6 p-3 bg-[#0048ad]/5 border-l-2 border-[#0048ad]">
-                <p className="text-[10px] font-bold leading-relaxed text-[#0f1723]/70 dark:text-white/60">
-                  Django 4.2.9 has a known security vulnerability — CVE-2024-27351. Update immediately.
-                </p>
               </div>
             </div>
           </div>
@@ -193,9 +251,9 @@ export default function Dashboard() {
         {/* Footer Status */}
         <footer className="flex items-center justify-between text-[10px] font-bold text-[#0f1723]/30 dark:text-white/30 uppercase tracking-widest pt-4 border-t border-black/10 dark:border-white/10">
           <div className="flex gap-4">
-            <span>pip 24.0</span>
-            <span>Python 3.12.1</span>
-            <span>Last Sync: {new Date().toLocaleTimeString()}</span>
+            {pythonInfo && <span>pip {pythonInfo.pipVersion}</span>}
+            {pythonInfo && <span>Python {pythonInfo.pythonVersion}</span>}
+            <span>Last Sync: {lastSync.toLocaleTimeString()}</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="w-1.5 h-1.5 bg-emerald-500"></span>

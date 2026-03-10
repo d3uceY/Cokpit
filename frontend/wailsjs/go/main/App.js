@@ -10,12 +10,20 @@ export function GetOutdatedPackages() {
   return window['go']['main']['App']['GetOutdatedPackages']();
 }
 
+export function GetPythonInfo() {
+  return window['go']['main']['App']['GetPythonInfo']();
+}
+
 export function Greet(arg1) {
   return window['go']['main']['App']['Greet'](arg1);
 }
 
 export function InstallPackage(arg1) {
   return window['go']['main']['App']['InstallPackage'](arg1);
+}
+
+export function SearchPackages(arg1) {
+  return window['go']['main']['App']['SearchPackages'](arg1);
 }
 
 export function UninstallPackage(arg1) {

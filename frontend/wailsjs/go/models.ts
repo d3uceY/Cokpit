@@ -38,6 +38,40 @@ export namespace pip {
 	        this.status = source["status"];
 	    }
 	}
+	export class PythonInfo {
+	    pythonVersion: string;
+	    pipVersion: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new PythonInfo(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.pythonVersion = source["pythonVersion"];
+	        this.pipVersion = source["pipVersion"];
+	    }
+	}
+	export class SearchResult {
+	    name: string;
+	    version: string;
+	    description: string;
+	    author: string;
+	    homePage: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new SearchResult(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.name = source["name"];
+	        this.version = source["version"];
+	        this.description = source["description"];
+	        this.author = source["author"];
+	        this.homePage = source["homePage"];
+	    }
+	}
 
 }
 

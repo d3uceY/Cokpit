@@ -28,6 +28,16 @@ func (a *App) Greet(name string) string {
 	return fmt.Sprintf("Hello %s, It's show time!", name)
 }
 
+// SearchPackages queries PyPI for packages matching the given query.
+func (a *App) SearchPackages(query string) ([]pip.SearchResult, error) {
+	return pip.SearchPackages(query)
+}
+
+// GetPythonInfo returns the active Python and pip versions.
+func (a *App) GetPythonInfo() (pip.PythonInfo, error) {
+	return pip.GetPythonInfo()
+}
+
 // GetOutdatedPackages returns packages that have a newer version available.
 func (a *App) GetOutdatedPackages() ([]pip.OutdatedPackage, error) {
 	return pip.GetOutdatedPackages()

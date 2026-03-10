@@ -6,9 +6,13 @@ export function GetInstalledPackages():Promise<Array<pip.Package>>;
 
 export function GetOutdatedPackages():Promise<Array<pip.OutdatedPackage>>;
 
+export function GetPythonInfo():Promise<pip.PythonInfo>;
+
 export function Greet(arg1:string):Promise<string>;
 
 export function InstallPackage(arg1:string):Promise<void>;
+
+export function SearchPackages(arg1:string):Promise<Array<pip.SearchResult>>;
 
 export function UninstallPackage(arg1:string):Promise<void>;
 
