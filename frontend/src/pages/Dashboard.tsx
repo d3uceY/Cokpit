@@ -19,7 +19,7 @@ const statusBadge = {
 export default function Dashboard() {
   const { setUpdateCount } = useOutletContext<AppOutletContext>()
 
-  const [packages, setPackages] = useState<pip.Package[]>([])
+  const [packages, setPackages] = useState<pip.PipPackage[]>([])
   const [outdated, setOutdated] = useState<pip.OutdatedPackage[]>([])
   const [pythonInfo, setPythonInfo] = useState<pip.PythonInfo | null>(null)
   const [loading, setLoading] = useState(true)

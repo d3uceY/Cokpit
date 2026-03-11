@@ -18,7 +18,7 @@ export namespace pip {
 	        this.bumpType = source["bumpType"];
 	    }
 	}
-	export class Package {
+	export class PipPackage {
 	    name: string;
 	    version: string;
 	    latestVersion: string;
@@ -26,7 +26,7 @@ export namespace pip {
 	    status: string;
 	
 	    static createFrom(source: any = {}) {
-	        return new Package(source);
+	        return new PipPackage(source);
 	    }
 	
 	    constructor(source: any = {}) {

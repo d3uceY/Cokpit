@@ -24,6 +24,7 @@ type PythonInfo struct {
 	PipVersion    string `json:"pipVersion"`
 }
 
+// httpClient is a shared HTTP client with a timeout for all requests to PyPI.
 var httpClient = &http.Client{Timeout: 10 * time.Second}
 
 // SearchPackages queries the PyPI JSON API for the given package name.

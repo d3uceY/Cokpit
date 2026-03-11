@@ -15,8 +15,8 @@ type OutdatedPackage struct {
 	BumpType      string `json:"bumpType"` // "major" | "minor" | "patch"
 }
 
-// Package represents an installed pip package with its metadata.
-type Package struct {
+// PipPackage represents an installed pip package with its metadata.
+type PipPackage struct {
 	Name          string `json:"name"`
 	Version       string `json:"version"`
 	LatestVersion string `json:"latestVersion"`
@@ -78,7 +78,7 @@ func classifyBump(current, latest string) string {
 }
 
 // GetInstalledPackages returns all installed pip packages with version and update status.
-func GetInstalledPackages() ([]Package, error) {
+func GetInstalledPackages() ([]PipPackage, error) {
 	installedOut, err := pip("list", "--format=json").Output()
 	if err != nil {
 		return nil, fmt.Errorf("pip list failed: %w", err)
@@ -104,7 +104,7 @@ func GetInstalledPackages() ([]Package, error) {
 	}
 	summaryMap := batchGetSummaries(names)
 
-	packages := make([]Package, len(installed))
+	packages := make([]PipPackage, len(installed))
 	for i, pkg := range installed {
 		key := strings.ToLower(pkg.Name)
 		latestVer, isOutdated := outdatedMap[key]
@@ -115,7 +115,7 @@ func GetInstalledPackages() ([]Package, error) {
 		if isOutdated {
 			status = "update-available"
 		}
-		packages[i] = Package{
+		packages[i] = PipPackage{
 			Name:          pkg.Name,
 			Version:       pkg.Version,
 			LatestVersion: latestVer,

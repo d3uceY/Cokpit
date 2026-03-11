@@ -3,7 +3,7 @@ import { GetInstalledPackages, InstallPackage, UninstallPackage, UpgradePackage 
 import type { pip } from '../../wailsjs/go/models'
 
 export default function InstalledPackages() {
-  const [packages, setPackages] = useState<pip.Package[]>([])
+  const [packages, setPackages] = useState<pip.PipPackage[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [search, setSearch] = useState('')
