@@ -7,6 +7,7 @@ import (
 	"os/exec"
 	"strings"
 )
+
 // OutdatedPackage represents a pip package that has a newer version available.
 type OutdatedPackage struct {
 	Name          string `json:"name"`
