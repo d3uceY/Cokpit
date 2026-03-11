@@ -44,7 +44,7 @@ func (a *App) GetOutdatedPackages() ([]pip.OutdatedPackage, error) {
 }
 
 // GetInstalledPackages returns all installed pip packages with version and update status.
-func (a *App) GetInstalledPackages() ([]pip.Package, error) {
+func (a *App) GetInstalledPackages() ([]pip.PipPackage, error) {
 	return pip.GetInstalledPackages()
 }
 
