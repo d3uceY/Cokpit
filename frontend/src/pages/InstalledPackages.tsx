@@ -1,80 +1,74 @@
-import { useState, useEffect, useCallback } from 'react'
-import { GetInstalledPackages, InstallPackage, UninstallPackage, UpgradePackage } from '../../wailsjs/go/main/App'
-import type { pip } from '../../wailsjs/go/models'
+import { useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { GetInstalledPackages, InstallPackage, UninstallPackage, UpgradePackage } from '../../wailsjs/go/main/App';
+import type { pip } from '../../wailsjs/go/models';
 
 export default function InstalledPackages() {
-  const [packages, setPackages] = useState<pip.PipPackage[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [search, setSearch] = useState('')
-  const [page, setPage] = useState(1)
-  const [actionLoading, setActionLoading] = useState<string | null>(null)
-  const [installName, setInstallName] = useState('')
-  const [showInstall, setShowInstall] = useState(false)
-  const pageSize = 20
+  const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [installName, setInstallName] = useState('');
+  const [showInstall, setShowInstall] = useState(false);
+  const pageSize = 20;
 
-  const loadPackages = useCallback(async () => {
-    setLoading(true)
-    setError(null)
-    try {
-      const pkgs = await GetInstalledPackages()
-      setPackages(pkgs ?? [])
-    } catch (e: any) {
-      setError(e?.message ?? String(e))
-    } finally {
-      setLoading(false)
-    }
-  }, [])
-
-  useEffect(() => {
-    loadPackages()
-  }, [loadPackages])
+  const queryClient = useQueryClient();
+  const {
+    data: packages = [],
+    isLoading: loading,
+    error,
+  } = useQuery<pip.PipPackage[], Error>({
+    queryKey: ['installed-packages'],
+    queryFn: async () => await GetInstalledPackages(),
+    staleTime: 0, // always refetch on window focus
+    // cacheTime is not a valid option in the object overload, so remove it
+  });
 
   const handleUpgrade = async (name: string) => {
-    setActionLoading(name)
+    setActionLoading(name);
     try {
-      await UpgradePackage(name)
-      await loadPackages()
+      await UpgradePackage(name);
+      await queryClient.invalidateQueries({ queryKey: ['installed-packages'] });
     } catch (e: any) {
-      alert(`Failed to upgrade ${name}: ${e?.message ?? e}`)
+      alert(`Failed to upgrade ${name}: ${e?.message ?? e}`);
     } finally {
-      setActionLoading(null)
+      setActionLoading(null);
     }
-  }
+  };
 
   const handleUninstall = async (name: string) => {
-    if (!confirm(`Uninstall ${name}?`)) return
-    setActionLoading(name)
+    // TODO: Replace with alert-dialog confirmation
+    if (!window.confirm(`Uninstall ${name}?`)) return;
+    setActionLoading(name);
     try {
-      await UninstallPackage(name)
-      setPackages((prev) => prev.filter((p) => p.name !== name))
+      await UninstallPackage(name);
+      await queryClient.invalidateQueries({ queryKey: ['installed-packages'] });
     } catch (e: any) {
-      alert(`Failed to uninstall ${name}: ${e?.message ?? e}`)
+      alert(`Failed to uninstall ${name}: ${e?.message ?? e}`);
     } finally {
-      setActionLoading(null)
+      setActionLoading(null);
     }
-  }
+  };
 
   const handleInstall = async () => {
-    if (!installName.trim()) return
-    setActionLoading('__install__')
+    if (!installName.trim()) return;
+    setActionLoading('__install__');
     try {
-      await InstallPackage(installName.trim())
-      setInstallName('')
-      setShowInstall(false)
-      await loadPackages()
+      await InstallPackage(installName.trim());
+      setInstallName('');
+      setShowInstall(false);
+      await queryClient.invalidateQueries({ queryKey: ['installed-packages'] });
     } catch (e: any) {
-      alert(`Failed to install ${installName}: ${e?.message ?? e}`)
+      alert(`Failed to install ${installName}: ${e?.message ?? e}`);
     } finally {
-      setActionLoading(null)
+      setActionLoading(null);
     }
-  }
+  };
 
   const filtered = packages.filter(
-    (p) =>
+    (p: pip.PipPackage) =>
       p.name.toLowerCase().includes(search.toLowerCase()) ||
-      p.summary.toLowerCase().includes(search.toLowerCase()),
-  )
+      p.summary.toLowerCase().includes(search.toLowerCase())
+  );
 
   const totalPages = Math.ceil(filtered.length / pageSize)
   const paginated = filtered.slice((page - 1) * pageSize, page * pageSize)
@@ -103,11 +97,10 @@ export default function InstalledPackages() {
             <button
               className="flex items-center justify-center w-10 h-10 bg-[#f5f7f8] dark:bg-white/5 border border-black/10 dark:border-white/10 hover:bg-black/5 dark:hover:bg-white/10 transition-colors disabled:opacity-50"
               disabled={loading}
-              onClick={loadPackages}
+              onClick={() => queryClient.invalidateQueries({ queryKey: ['installed-packages'] })}
             >
               <span
-                className={`material-symbols-outlined text-[20px] ${loading ? "animate-spin" : ""
-                  }`}
+                className={`material-symbols-outlined text-[20px] ${loading ? "animate-spin" : ""}`}
               >
                 refresh
               </span>
@@ -191,7 +184,7 @@ export default function InstalledPackages() {
         {error && (
           <div className="mb-4 flex items-center gap-3 p-4 border border-red-500/30 bg-red-50 dark:bg-red-900/10 text-red-600 dark:text-red-400 text-sm">
             <span className="material-symbols-outlined text-[20px]">error</span>
-            <span>{error}</span>
+            <span>{error.message}</span>
           </div>
         )}
 
