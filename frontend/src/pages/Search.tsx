@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { SearchPackages, InstallPackage } from '../../wailsjs/go/main/App'
 import type { pip } from '../../wailsjs/go/models'
+import { PipTerminal } from '../components/ui/PipTerminal'
 
 export default function Search() {
   const [query, setQuery] = useState('')
@@ -8,7 +9,10 @@ export default function Search() {
   const [loading, setLoading] = useState(false)
   const [results, setResults] = useState<pip.SearchResult[]>([])
   const [installing, setInstalling] = useState<string | null>(null)
+  const [installed, setInstalled] = useState<Set<string>>(new Set())
   const [error, setError] = useState<string | null>(null)
+  const [terminalOpen, setTerminalOpen] = useState(false)
+  const [terminalTitle, setTerminalTitle] = useState('')
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -28,9 +32,12 @@ export default function Search() {
   }
 
   const handleInstall = async (name: string) => {
+    setTerminalTitle(`pip install ${name}`)
+    setTerminalOpen(true)
     setInstalling(name)
     try {
       await InstallPackage(name)
+      setInstalled((prev) => new Set(prev).add(name))
     } finally {
       setInstalling(null)
     }
@@ -72,6 +79,15 @@ export default function Search() {
             )}
           </button>
         </form>
+
+        {terminalOpen && (
+          <PipTerminal
+            open={terminalOpen}
+            title={terminalTitle}
+            running={installing !== null}
+            onClose={() => setTerminalOpen(false)}
+          />
+        )}
       </header>
 
       <div className="flex-1 overflow-auto p-8">
@@ -144,23 +160,30 @@ export default function Search() {
                         )}
                       </td>
                       <td className="px-6 py-4 text-right">
-                        <button
-                          className="px-3 py-1.5 bg-[#0048ad] text-white text-xs font-bold hover:brightness-110 transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-1.5 ml-auto"
-                          disabled={installing === r.name}
-                          onClick={() => handleInstall(r.name)}
-                        >
-                          {installing === r.name ? (
-                            <>
-                              <span className="material-symbols-outlined text-sm animate-spin">progress_activity</span>
-                              Installing…
-                            </>
-                          ) : (
-                            <>
-                              <span className="material-symbols-outlined text-sm">download</span>
-                              pip install
-                            </>
-                          )}
-                        </button>
+                        {installed.has(r.name) ? (
+                          <span className="px-3 py-1.5 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 text-xs font-bold flex items-center gap-1.5 ml-auto w-fit border border-emerald-200 dark:border-emerald-800">
+                            <span className="material-symbols-outlined text-sm">check</span>
+                            Installed
+                          </span>
+                        ) : (
+                          <button
+                            className="px-3 py-1.5 bg-[#0048ad] text-white text-xs font-bold hover:brightness-110 transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-1.5 ml-auto"
+                            disabled={installing === r.name}
+                            onClick={() => handleInstall(r.name)}
+                          >
+                            {installing === r.name ? (
+                              <>
+                                <span className="material-symbols-outlined text-sm animate-spin">progress_activity</span>
+                                Installing…
+                              </>
+                            ) : (
+                              <>
+                                <span className="material-symbols-outlined text-sm">download</span>
+                                pip install
+                              </>
+                            )}
+                          </button>
+                        )}
                       </td>
                     </tr>
                   ))}
