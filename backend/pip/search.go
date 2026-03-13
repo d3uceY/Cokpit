@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"sort"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -23,42 +25,179 @@ type PythonInfo struct {
 	PipVersion    string `json:"pipVersion"`
 }
 
-var httpClient = &http.Client{Timeout: 10 * time.Second}
+var httpClient = &http.Client{Timeout: 30 * time.Second}
 
-// SearchPackages queries the PyPI JSON API for the given package name.
-// It returns metadata for the exact match and up to 5 close matches via a
-// simple search against pypi.org/search (JSON Simple API).
+// — Simple index cache —
+
+var (
+	simpleIndexMu    sync.RWMutex
+	simpleIndexNames []string // normalised (lowercase, hyphen-normalised)
+	simpleIndexRaw   []string // original casing from PyPI
+	simpleIndexReady bool
+)
+
+type simpleIndexResponse struct {
+	Projects []struct {
+		Name string `json:"name"`
+	} `json:"projects"`
+}
+
+// loadSimpleIndex fetches the full package name list from the PyPI Simple JSON
+// API and caches it for the lifetime of the process. Errors are not cached,
+// so the next search will retry if a previous attempt failed.
+func loadSimpleIndex() ([]string, []string, error) {
+	// Fast path: already loaded.
+	simpleIndexMu.RLock()
+	if simpleIndexReady {
+		raw, norm := simpleIndexRaw, simpleIndexNames
+		simpleIndexMu.RUnlock()
+		return raw, norm, nil
+	}
+	simpleIndexMu.RUnlock()
+
+	// Slow path: fetch the index.
+	simpleIndexMu.Lock()
+	defer simpleIndexMu.Unlock()
+	// Double-check after acquiring write lock.
+	if simpleIndexReady {
+		return simpleIndexRaw, simpleIndexNames, nil
+	}
+
+	req, err := http.NewRequest("GET", "https://pypi.org/simple/", nil)
+	if err != nil {
+		return nil, nil, err
+	}
+	req.Header.Set("Accept", "application/vnd.pypi.simple.v1+json")
+
+	client := &http.Client{Timeout: 60 * time.Second}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		return nil, nil, fmt.Errorf("simple index returned status %d", resp.StatusCode)
+	}
+
+	var index simpleIndexResponse
+	if err := json.NewDecoder(resp.Body).Decode(&index); err != nil {
+		return nil, nil, err
+	}
+
+	raw := make([]string, len(index.Projects))
+	norm := make([]string, len(index.Projects))
+	for i, p := range index.Projects {
+		raw[i] = p.Name
+		norm[i] = normalise(p.Name)
+	}
+
+	simpleIndexRaw = raw
+	simpleIndexNames = norm
+	simpleIndexReady = true
+	return raw, norm, nil
+}
+
+// normalise lowercases and replaces underscores/dots with hyphens (PEP 503).
+func normalise(s string) string {
+	s = strings.ToLower(s)
+	s = strings.ReplaceAll(s, "_", "-")
+	s = strings.ReplaceAll(s, ".", "-")
+	return s
+}
+
+// WarmSimpleIndex pre-fetches the PyPI Simple index in the background.
+// Call this once at startup so the first search is instant.
+func WarmSimpleIndex() {
+	loadSimpleIndex() //nolint:errcheck
+}
+
+// SearchPackages searches the PyPI Simple index for packages matching query,
+// then fetches metadata for the top results in parallel.
 func SearchPackages(query string) ([]SearchResult, error) {
 	query = strings.TrimSpace(query)
 	if query == "" {
 		return nil, fmt.Errorf("query is empty")
 	}
 
-	// First try exact match via /pypi/<name>/json
-	results, _ := fetchExactMatch(query)
-
-	// Also query the PyPI simple search endpoint to get additional matches.
-	// PyPI's /search?q=<query>&format=columns returns HTML, so we use the
-	// XML/JSON warehouse search API instead.
-	extra, _ := fetchSearchResults(query)
-
-	// Merge: exact first, then extras that aren't already included.
-	seen := make(map[string]bool)
-	for _, r := range results {
-		seen[strings.ToLower(r.Name)] = true
+	raw, norm, err := loadSimpleIndex()
+	if err != nil {
+		// fallback: single exact-match lookup
+		return fetchPackageMetadata(query)
 	}
-	for _, r := range extra {
-		if !seen[strings.ToLower(r.Name)] {
-			results = append(results, r)
-			seen[strings.ToLower(r.Name)] = true
+
+	normQuery := normalise(query)
+
+	// Score each name: exact > prefix > contains.
+	type scored struct {
+		name  string
+		score int
+	}
+	var matches []scored
+	for i, n := range norm {
+		var sc int
+		if n == normQuery {
+			sc = 3
+		} else if strings.HasPrefix(n, normQuery) {
+			sc = 2
+		} else if strings.Contains(n, normQuery) {
+			sc = 1
+		} else {
+			continue
+		}
+		matches = append(matches, scored{raw[i], sc})
+	}
+
+	sort.SliceStable(matches, func(i, j int) bool {
+		if matches[i].score != matches[j].score {
+			return matches[i].score > matches[j].score
+		}
+		return len(matches[i].name) < len(matches[j].name)
+	})
+
+	const maxResults = 20
+	if len(matches) > maxResults {
+		matches = matches[:maxResults]
+	}
+
+	// Fetch metadata in parallel.
+	type result struct {
+		idx int
+		res SearchResult
+		err error
+	}
+	ch := make(chan result, len(matches))
+	for i, m := range matches {
+		go func(idx int, name string) {
+			results, err := fetchPackageMetadata(name)
+			if err != nil || len(results) == 0 {
+				ch <- result{idx: idx, err: err}
+				return
+			}
+			ch <- result{idx: idx, res: results[0]}
+		}(i, m.name)
+	}
+
+	out := make([]SearchResult, len(matches))
+	for range matches {
+		r := <-ch
+		if r.err == nil {
+			out[r.idx] = r.res
 		}
 	}
 
-	return results, nil
+	// Remove empty slots (failed fetches).
+	filtered := out[:0]
+	for _, r := range out {
+		if r.Name != "" {
+			filtered = append(filtered, r)
+		}
+	}
+	return filtered, nil
 }
 
-// fetchExactMatch fetches metadata for an exact package name from PyPI.
-func fetchExactMatch(name string) ([]SearchResult, error) {
+// fetchPackageMetadata fetches metadata for a single package from the PyPI JSON API.
+func fetchPackageMetadata(name string) ([]SearchResult, error) {
 	url := fmt.Sprintf("https://pypi.org/pypi/%s/json", name)
 	resp, err := httpClient.Get(url)
 	if err != nil {
@@ -95,38 +234,6 @@ func fetchExactMatch(name string) ([]SearchResult, error) {
 		Author:      payload.Info.Author,
 		HomePage:    homePage,
 	}}, nil
-}
-
-// fetchSearchResults queries https://pypi.org/search/?q=<query>&o=&c=&format=columns
-// via the PyPI XML search (returns up to 20 results).
-func fetchSearchResults(query string) ([]SearchResult, error) {
-	// PyPI has a legacy XMLRPC endpoint we can use for search.
-	xmlBody := fmt.Sprintf(`<?xml version='1.0'?>
-<methodCall>
-<methodName>search</methodName>
-<params>
-<param><value><struct>
-<member><name>name</name><value><string>%s</string></value></member>
-<member><name>summary</name><value><string>%s</string></value></member>
-</struct></value></param>
-<param><value><string>or</string></value></param>
-</params>
-</methodCall>`, query, query)
-
-	req, err := http.NewRequest("POST", "https://pypi.org/pypi", strings.NewReader(xmlBody))
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Content-Type", "text/xml")
-
-	resp, err := httpClient.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	// Parse the XMLRPC response manually (lightweight, no external deps).
-	return parseXMLRPCSearchResponse(resp)
 }
 
 // GetPythonInfo returns the active Python and pip versions.

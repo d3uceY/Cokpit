@@ -29,6 +29,8 @@ func (a *App) startup(ctx context.Context) {
 			wailsruntime.EventsEmit(ctx, "pip:stream", msg)
 		}
 	}
+	// Pre-warm the PyPI Simple index in the background so the first search is fast.
+	go pip.WarmSimpleIndex()
 }
 
 // Greet returns a greeting for the given name
