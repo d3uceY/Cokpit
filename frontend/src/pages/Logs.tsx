@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { EventsOn } from '../../wailsjs/runtime/runtime'
+import { GetLogs } from '../../wailsjs/go/main/App'
 
 interface LogEntry {
   ts: string
@@ -21,6 +22,11 @@ export default function Logs() {
   const bottomRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
+    GetLogs().then((entries) => {
+      if (entries?.length) {
+        setLogs(entries.map((e) => ({ ts: e.timestamp, level: e.level, msg: e.message })))
+      }
+    })
     const off = EventsOn('pip:log', (level: string, msg: string) => {
       const ts = new Date().toLocaleTimeString('en-GB', { hour12: false })
       setLogs((prev) => [...prev, { ts, level: level ?? 'INFO', msg: msg ?? '' }])

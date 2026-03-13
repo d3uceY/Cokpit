@@ -92,6 +92,11 @@ func (a *App) GetPipEnvironmentInfo() (pip.PipEnvironmentInfo, error) {
 	return pip.GetPipEnvironmentInfo()
 }
 
+// GetLogs returns all persisted log entries.
+func (a *App) GetLogs() ([]pip.LogEntry, error) {
+	return pip.GetLogs()
+}
+
 // BatchUninstall removes multiple pip packages and returns a map of name→error.
 func (a *App) BatchUninstall(names []string) map[string]string {
 	errs := make(map[string]string)

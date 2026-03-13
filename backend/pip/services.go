@@ -188,7 +188,9 @@ func parsePipShow(output string) map[string]string {
 // LogEmitter is set by app.go to forward log lines to the frontend via Wails events.
 var LogEmitter func(level, msg string)
 
+// emitLog sends a log message to the frontend if LogEmitter is set.
 func emitLog(level, msg string) {
+	AppendLog(level, msg)
 	if LogEmitter != nil {
 		LogEmitter(level, msg)
 	}

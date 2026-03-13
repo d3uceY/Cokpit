@@ -18,6 +18,10 @@ export function GetInstalledPackages() {
   return window['go']['main']['App']['GetInstalledPackages']();
 }
 
+export function GetLogs() {
+  return window['go']['main']['App']['GetLogs']();
+}
+
 export function GetOutdatedPackages() {
   return window['go']['main']['App']['GetOutdatedPackages']();
 }

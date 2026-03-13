@@ -10,6 +10,8 @@ export function GetHistory():Promise<Array<pip.HistoryEntry>>;
 
 export function GetInstalledPackages():Promise<Array<pip.PipPackage>>;
 
+export function GetLogs():Promise<Array<pip.LogEntry>>;
+
 export function GetOutdatedPackages():Promise<Array<pip.OutdatedPackage>>;
 
 export function GetPipEnvironmentInfo():Promise<pip.PipEnvironmentInfo>;
