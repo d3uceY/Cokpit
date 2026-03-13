@@ -1,8 +1,8 @@
-import { useEffect, useState, useCallback } from 'react'
 import { useOutletContext } from 'react-router-dom'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { GetInstalledPackages, GetOutdatedPackages, GetPythonInfo, GetHistory, UpgradePackage } from '../../wailsjs/go/main/App'
-import type { pip } from '../../wailsjs/go/models'
 import type { AppOutletContext } from '../components/layout/AppLayout'
+import { useEffect, useState } from 'react'
 
 const statusBadge: Record<string, string> = {
   success: 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400',
@@ -11,42 +11,53 @@ const statusBadge: Record<string, string> = {
 
 export default function Dashboard() {
   const { setUpdateCount } = useOutletContext<AppOutletContext>()
-
-  const [packages, setPackages] = useState<pip.PipPackage[]>([])
-  const [outdated, setOutdated] = useState<pip.OutdatedPackage[]>([])
-  const [pythonInfo, setPythonInfo] = useState<pip.PythonInfo | null>(null)
-  const [recentActivity, setRecentActivity] = useState<pip.HistoryEntry[]>([])
-  const [loading, setLoading] = useState(true)
+  const queryClient = useQueryClient()
   const [upgradingAll, setUpgradingAll] = useState(false)
-  const [lastSync, setLastSync] = useState(new Date())
 
-  const load = useCallback(async () => {
-    setLoading(true)
-    try {
-      const [pkgs, out, info, hist] = await Promise.all([
-        GetInstalledPackages(),
-        GetOutdatedPackages(),
-        GetPythonInfo(),
-        GetHistory(),
-      ])
-      setPackages(pkgs ?? [])
-      setOutdated(out ?? [])
-      setPythonInfo(info)
-      setRecentActivity((hist ?? []).slice(0, 5))
-      setUpdateCount((out ?? []).length)
-      setLastSync(new Date())
-    } finally {
-      setLoading(false)
-    }
-  }, [setUpdateCount])
+  const { data: packages = [], isLoading: loadingPkgs } = useQuery({
+    queryKey: ['installed-packages'],
+    queryFn: () => GetInstalledPackages(),
+    staleTime: 0,
+  })
 
-  useEffect(() => { load() }, [load])
+  const { data: outdated = [], isLoading: loadingOutdated } = useQuery({
+    queryKey: ['outdated-packages'],
+    queryFn: () => GetOutdatedPackages(),
+    staleTime: 0,
+  })
+
+  const { data: pythonInfo = null, isLoading: loadingInfo } = useQuery({
+    queryKey: ['python-info'],
+    queryFn: () => GetPythonInfo(),
+    staleTime: 60_000,
+  })
+
+  const { data: historyData = [], isLoading: loadingHistory } = useQuery({
+    queryKey: ['history'],
+    queryFn: () => GetHistory(),
+    staleTime: 0,
+  })
+
+  const loading = loadingPkgs || loadingOutdated || loadingInfo || loadingHistory
+  const recentActivity = historyData.slice(0, 5)
+  const lastSync = new Date()
+
+  useEffect(() => {
+    setUpdateCount(outdated.length)
+  }, [outdated.length, setUpdateCount])
+
+  const refresh = () => {
+    queryClient.invalidateQueries({ queryKey: ['installed-packages'] })
+    queryClient.invalidateQueries({ queryKey: ['outdated-packages'] })
+    queryClient.invalidateQueries({ queryKey: ['python-info'] })
+    queryClient.invalidateQueries({ queryKey: ['history'] })
+  }
 
   const handleUpgradeAll = async () => {
     setUpgradingAll(true)
     try {
       await Promise.all(outdated.map((p) => UpgradePackage(p.name)))
-      await load()
+      refresh()
     } finally {
       setUpgradingAll(false)
     }
@@ -77,7 +88,7 @@ export default function Dashboard() {
         </div>
         <div className="flex items-center gap-3">
           <button
-            onClick={load}
+            onClick={refresh}
             disabled={loading}
             className="px-4 py-2 border border-black/15 dark:border-white/10 text-xs font-bold uppercase tracking-widest hover:bg-black/5 dark:hover:bg-white/5 transition-colors disabled:opacity-60"
           >
