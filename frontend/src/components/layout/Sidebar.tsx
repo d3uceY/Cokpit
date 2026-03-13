@@ -13,6 +13,7 @@ const navItems = [
 const systemItems = [
   { to: '/history', label: 'History', icon: 'history' },
   { to: '/logs', label: 'Logs', icon: 'terminal' },
+  { to: '/doctor', label: 'Doctor', icon: 'health_and_safety' },
   { to: '/settings', label: 'Settings', icon: 'settings' },
 ]
 

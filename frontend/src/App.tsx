@@ -13,6 +13,7 @@ const Environment = lazy(() => import('@/pages/PackageManagers'))
 const History = lazy(() => import('@/pages/History'))
 const Logs = lazy(() => import('@/pages/Logs'))
 const Settings = lazy(() => import('@/pages/Settings'))
+const Doctor = lazy(() => import('@/pages/Doctor'))
 
 function PageFallback() {
   return (
@@ -37,6 +38,7 @@ function App() {
             <Route path="history" element={<History />} />
             <Route path="logs" element={<Logs />} />
             <Route path="settings" element={<Settings />} />
+            <Route path="doctor" element={<Doctor />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>

@@ -26,6 +26,8 @@ export function InstallPackage(arg1:string):Promise<void>;
 
 export function RunCleanup(arg1:Array<string>):Promise<void>;
 
+export function RunDoctor():Promise<pip.DoctorReport>;
+
 export function SearchPackages(arg1:string):Promise<Array<pip.SearchResult>>;
 
 export function UninstallPackage(arg1:string):Promise<void>;

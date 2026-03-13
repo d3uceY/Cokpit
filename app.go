@@ -99,6 +99,11 @@ func (a *App) GetPipEnvironmentInfo() (pip.PipEnvironmentInfo, error) {
 	return pip.GetPipEnvironmentInfo()
 }
 
+// RunDoctor runs all diagnostic checks and returns a report.
+func (a *App) RunDoctor() pip.DoctorReport {
+	return pip.RunDoctor()
+}
+
 // GetLogs returns all persisted log entries.
 func (a *App) GetLogs() ([]pip.LogEntry, error) {
 	return pip.GetLogs()

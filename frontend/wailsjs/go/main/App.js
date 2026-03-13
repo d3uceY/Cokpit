@@ -50,6 +50,10 @@ export function RunCleanup(arg1) {
   return window['go']['main']['App']['RunCleanup'](arg1);
 }
 
+export function RunDoctor() {
+  return window['go']['main']['App']['RunDoctor']();
+}
+
 export function SearchPackages(arg1) {
   return window['go']['main']['App']['SearchPackages'](arg1);
 }
