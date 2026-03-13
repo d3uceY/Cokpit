@@ -21,9 +21,10 @@ interface SidebarProps {
   isDark: boolean
   onToggleTheme: () => void
   updateCount: number
+  version: string
 }
 
-export function Sidebar({ isDark, onToggleTheme, updateCount }: SidebarProps) {
+export function Sidebar({ isDark, onToggleTheme, updateCount, version }: SidebarProps) {
   return (
     <aside id="tour-sidebar" className="w-64 border-r border-black/10 dark:border-white/10 bg-[#f5f7f8] dark:bg-[#0f1723] flex flex-col fixed h-full z-10">
       {/* Brand */}
@@ -92,7 +93,7 @@ export function Sidebar({ isDark, onToggleTheme, updateCount }: SidebarProps) {
       <div className="p-4 border-t border-black/10 dark:border-white/10 flex items-center justify-between">
         <div className="flex items-center gap-2 text-[10px] font-bold text-[#0f1723]/40 dark:text-white/40 uppercase tracking-widest">
           <span className="w-1.5 h-1.5 bg-emerald-500"></span>
-          <span>Cokpyt v0.1.0</span>
+          <span>Cokpyt {version}</span>
         </div>
         <button
           onClick={onToggleTheme}

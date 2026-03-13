@@ -42,6 +42,10 @@ export function GetPythonInfo() {
   return window['go']['main']['App']['GetPythonInfo']();
 }
 
+export function GetVersion() {
+  return window['go']['main']['App']['GetVersion']();
+}
+
 export function Greet(arg1) {
   return window['go']['main']['App']['Greet'](arg1);
 }

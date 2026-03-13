@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
 import { Sidebar } from './Sidebar'
-import { GetConfig, SetTheme, MarkTourSeen } from '../../../wailsjs/go/main/App'
+import { GetConfig, SetTheme, MarkTourSeen, GetVersion } from '../../../wailsjs/go/main/App'
 import type { pip } from '../../../wailsjs/go/models'
 import { startTour } from '../../lib/tour'
 
@@ -15,6 +15,11 @@ export type AppOutletContext = {
 export function AppLayout() {
   const [isDark, setIsDark] = useState<boolean | null>(null)
   const [updateCount, setUpdateCount] = useState(0)
+  const [version, setVersion] = useState('v0.1.0')
+
+  useEffect(() => {
+    GetVersion().then(setVersion).catch(() => {})
+  }, [])
 
   useEffect(() => {
     GetConfig().then((cfg: pip.AppConfig) => {
@@ -56,7 +61,7 @@ export function AppLayout() {
 
   return (
     <div className="flex min-h-screen bg-[#f5f7f8] dark:bg-[#0f1723] text-[#0f1723] dark:text-white font-sans antialiased overflow-hidden">
-      <Sidebar isDark={isDark} onToggleTheme={toggleTheme} updateCount={updateCount} />
+      <Sidebar isDark={isDark} onToggleTheme={toggleTheme} updateCount={updateCount} version={version} />
       <main className="ml-64 flex-1 flex flex-col min-w-0 min-h-screen">
         <Outlet context={{ setUpdateCount, isDark, onToggleTheme: setTheme, onStartTour: handleStartTour } satisfies AppOutletContext} />
       </main>

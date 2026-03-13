@@ -221,49 +221,6 @@ export default function Dashboard() {
               </table>
             </div>
           </div>
-
-          {/* Side Widgets */}
-          <div className="space-y-6">
-            {/* PyPI Status */}
-            <div className="border border-black/15 dark:border-white/10 bg-white dark:bg-white/5 overflow-hidden">
-              <div className="p-4 border-b border-black/10 dark:border-white/10">
-                <h2 className="text-sm font-black uppercase tracking-widest">Registry Status</h2>
-              </div>
-              <div className="p-4 space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-[#0048ad]">lan</span>
-                    <div>
-                      <p className="text-xs font-bold uppercase tracking-tight">PyPI</p>
-                      <p className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold uppercase">Connected</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Update Priority */}
-            <div className="border border-black/15 dark:border-white/10 bg-white dark:bg-white/5 p-4">
-              <h2 className="text-sm font-black uppercase tracking-widest mb-4">Update Priority</h2>
-              <div className="space-y-3">
-                {[
-                  { label: 'Major', pct: majorPct, color: 'bg-red-500' },
-                  { label: 'Minor', pct: minorPct, color: 'bg-[#0048ad]' },
-                  { label: 'Patch', pct: patchPct, color: 'bg-[#0f1723]/20 dark:bg-white/20' },
-                ].map((bar) => (
-                  <div key={bar.label}>
-                    <div className="flex justify-between items-end mb-1">
-                      <span className="text-[10px] font-bold uppercase tracking-widest">{bar.label}</span>
-                      <span className="text-xs font-black">{outdated.length === 0 ? '—' : `${bar.pct}%`}</span>
-                    </div>
-                    <div className="w-full h-1 bg-black/5 dark:bg-white/5">
-                      <div className={`${bar.color} h-full`} style={{ width: `${bar.pct}%` }}></div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* Footer Status */}

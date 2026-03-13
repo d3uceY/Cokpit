@@ -22,6 +22,8 @@ export function GetPipEnvironmentInfo():Promise<pip.PipEnvironmentInfo>;
 
 export function GetPythonInfo():Promise<pip.PythonInfo>;
 
+export function GetVersion():Promise<string>;
+
 export function Greet(arg1:string):Promise<string>;
 
 export function InstallPackage(arg1:string):Promise<void>;
