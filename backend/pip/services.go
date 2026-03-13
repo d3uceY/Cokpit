@@ -39,8 +39,10 @@ type pipOutdatedEntry struct {
 
 // pip returns an exec.Cmd that runs python -m pip with the given arguments.
 // Using "python -m pip" ensures pip is found even when it is not on PATH directly.
+// --disable-pip-version-check suppresses pip's self-update notification UI.
 func pip(args ...string) *exec.Cmd {
-	cmd := exec.Command("python", append([]string{"-m", "pip"}, args...)...)
+	allArgs := append([]string{"-m", "pip", "--disable-pip-version-check"}, args...)
+	cmd := exec.Command("python", allArgs...)
 	hideWindow(cmd)
 	return cmd
 }
