@@ -9,6 +9,10 @@
 [![Linux](https://img.shields.io/badge/Linux-supported-FCC624?style=for-the-badge&logo=linux&logoColor=black)](https://github.com/d3uceY/Cokpit/releases/latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
 
+<br />
+
+<img src="readme/asssets/hero.png" alt="Cokpyt hero screenshot" width="100%" />
+
 </div>
 
 ---
@@ -60,8 +64,6 @@ When you open Cokpyt you land on the **Overview** page. It shows three stat card
 
 Click **Refresh** in the top-right to re-fetch all data from your live environment. Click **Update All** to upgrade every outdated package in one shot.
 
-<!-- Image: Screenshot of the Dashboard page -->
-
 ---
 
 ### 2. Installed Packages
@@ -76,7 +78,7 @@ Go to **Installed Packages** in the sidebar to see a full table of every package
 
 A live terminal panel slides in at the bottom of the screen when any operation is running so you can follow the pip output in real time.
 
-<!-- Image: Screenshot of the Installed Packages page showing the install bar and bulk select -->
+<div align="center"><img src="readme/asssets/installed_packages.png" alt="Installed Packages page" width="100%" /></div>
 
 ---
 
@@ -86,7 +88,7 @@ Go to **Updates** to see every package that has a newer version available on PyP
 
 Click **Upgrade** on a single row to update that package. Click **Update All** in the header to upgrade everything at once.
 
-<!-- Image: Screenshot of the Updates page -->
+<div align="center"><img src="readme/asssets/updates.png" alt="Updates page" width="100%" /></div>
 
 ---
 
@@ -94,7 +96,7 @@ Click **Upgrade** on a single row to update that package. Click **Update All** i
 
 Go to **Search** and type any package name or keyword. Cokpyt queries the PyPI index and shows results with the package name, version, and description. Click **Install** on any result to add it to your environment immediately.
 
-<!-- Image: Screenshot of the Search page with results and the Install button -->
+<div align="center"><img src="readme/asssets/search.png" alt="Search page" width="100%" /></div>
 
 ---
 
@@ -109,7 +111,7 @@ Go to **Doctor** and click **Re-run checks**. Cokpyt runs a suite of diagnostics
 
 Each check comes back as **Passed**, **Warning**, or **Failed**. Warnings and failures include a plain-English explanation of the problem and a concrete suggestion for how to fix it.
 
-<!-- Image: Screenshot of the Doctor page showing a mix of passing and warning checks -->
+<div align="center"><img src="readme/asssets/doctor.png" alt="Doctor page" width="100%" /></div>
 
 ---
 
@@ -122,7 +124,7 @@ Every install, upgrade, and uninstall that Cokpyt runs is logged to the **Histor
 - **Export CSV** -- download the full history as a CSV file for your own records
 - **Clear All** -- wipe the history log (two-step confirmation required)
 
-<!-- Image: Screenshot of the History page with an expanded row -->
+<div align="center"><img src="readme/asssets/history.png" alt="History page" width="100%" /></div>
 
 ---
 
@@ -136,7 +138,7 @@ Go to **Cleanup** to scan for space wasted by pip internals. Cokpyt checks the s
 
 Select what you want to remove and click **Run Cleanup**. Cokpyt deletes the selected artefacts and shows you how much space was recovered.
 
-<!-- Image: Screenshot of the Cleanup page showing cache sizes before and after -->
+<div align="center"><img src="readme/asssets/cleanup.png" alt="Cleanup page" width="100%" /></div>
 
 ---
 
@@ -144,7 +146,7 @@ Select what you want to remove and click **Run Cleanup**. Cokpyt deletes the sel
 
 The **Logs** page shows raw application logs from the current session -- useful if something behaves unexpectedly and you want to see exactly what pip returned. Logs are tagged by severity level (INFO, WARN, ERROR).
 
-<!-- Image: Screenshot of the Logs page -->
+<div align="center"><img src="readme/asssets/logs.png" alt="Logs page" width="100%" /></div>
 
 ---
 
