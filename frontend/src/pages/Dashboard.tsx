@@ -103,7 +103,7 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Installed count */}
           <div className="border border-black/15 dark:border-white/10 p-6 flex flex-col justify-between bg-white dark:bg-white/5">
-            <div className="flex justify-between items-start">
+            <div className="flex justify-between items-center">
               <span className="text-[10px] font-black uppercase tracking-widest text-[#0f1723]/40 dark:text-white/40">Installed Packages</span>
               <span className="material-symbols-outlined text-[#0f1723]/30 dark:text-white/30">inventory_2</span>
             </div>
@@ -118,7 +118,7 @@ export default function Dashboard() {
           {/* Outdated count */}
           <div className="border border-black/15 dark:border-white/10 p-6 flex flex-col justify-between bg-white dark:bg-white/5 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-1 bg-[#0048ad] h-full"></div>
-            <div className="flex justify-between items-start">
+            <div className="flex justify-between items-center">
               <span className="text-[10px] font-black uppercase tracking-widest text-[#0f1723]/40 dark:text-white/40">Outdated Packages</span>
               <span className="material-symbols-outlined text-[#0048ad]">download</span>
             </div>
@@ -132,7 +132,7 @@ export default function Dashboard() {
 
           {/* Python runtime */}
           <div className="border border-black/15 dark:border-white/10 p-6 flex flex-col justify-between bg-white dark:bg-white/5">
-            <div className="flex justify-between items-start">
+            <div className="flex justify-between items-center">
               <span className="text-[10px] font-black uppercase tracking-widest text-[#0f1723]/40 dark:text-white/40">Python Runtime</span>
               <span className="material-symbols-outlined text-[#0f1723]/30 dark:text-white/30">data_object</span>
             </div>
