@@ -65,13 +65,6 @@ export default function Dashboard() {
     }
   }
 
-  // Compute update priority breakdown from bump types
-  const majorCount = outdated.filter((p) => p.bumpType === 'major').length
-  const minorCount = outdated.filter((p) => p.bumpType === 'minor').length
-  const total = outdated.length || 1
-  const majorPct = Math.round((majorCount / total) * 100)
-  const minorPct = Math.round((minorCount / total) * 100)
-
   const Skeleton = ({ className }: { className?: string }) => (
     <div className={`animate-pulse bg-black/10 dark:bg-white/10 ${className ?? ''}`} />
   )
