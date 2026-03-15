@@ -44,6 +44,7 @@ def main():
         proc = subprocess.Popen([dest])
         print(f"Installer is running (PID {proc.pid}).")
         print("Complete the installation wizard, then press Enter here to close this window.")
+        proc.wait()
         input()
         os.remove(dest)
 

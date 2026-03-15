@@ -127,6 +127,7 @@ export namespace pip {
 	    version: string;
 	    latestVersion: string;
 	    bumpType: string;
+	    changelogUrl: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new OutdatedPackage(source);
@@ -138,6 +139,7 @@ export namespace pip {
 	        this.version = source["version"];
 	        this.latestVersion = source["latestVersion"];
 	        this.bumpType = source["bumpType"];
+	        this.changelogUrl = source["changelogUrl"];
 	    }
 	}
 	export class PipEnvironmentInfo {

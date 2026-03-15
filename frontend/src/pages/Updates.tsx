@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useOutletContext } from 'react-router-dom'
 import { GetOutdatedPackages, UpgradePackage } from '../../wailsjs/go/main/App'
+import { BrowserOpenURL } from '../../wailsjs/runtime/runtime'
 import type { pip } from '../../wailsjs/go/models'
 import type { AppOutletContext } from '../components/layout/AppLayout'
 
@@ -208,23 +209,35 @@ export default function Updates() {
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <button
-                        className="flex items-center gap-1.5 px-3 py-1.5 bg-[#0048ad] text-white text-xs font-bold hover:brightness-110 transition-all disabled:opacity-60 disabled:cursor-not-allowed ml-auto"
-                        disabled={isUpgrading}
-                        onClick={() => runUpgrade(item.name)}
-                      >
-                        {isUpgrading ? (
-                          <>
-                            <span className="material-symbols-outlined text-sm animate-spin">progress_activity</span>
-                            Upgrading…
-                          </>
-                        ) : (
-                          <>
-                            <span className="material-symbols-outlined text-sm">upgrade</span>
-                            Upgrade
-                          </>
+                      <div className="flex items-center justify-end gap-2">
+                        {item.changelogUrl && (
+                          <button
+                            className="flex items-center gap-1.5 px-3 py-1.5 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-[#0f1723]/70 dark:text-white/70 text-xs font-bold hover:bg-black/10 dark:hover:bg-white/10 transition-all"
+                            title="View changelog"
+                            onClick={() => BrowserOpenURL(item.changelogUrl)}
+                          >
+                            <span className="material-symbols-outlined text-sm">history</span>
+                            Changelog
+                          </button>
                         )}
-                      </button>
+                        <button
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-[#0048ad] text-white text-xs font-bold hover:brightness-110 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+                          disabled={isUpgrading}
+                          onClick={() => runUpgrade(item.name)}
+                        >
+                          {isUpgrading ? (
+                            <>
+                              <span className="material-symbols-outlined text-sm animate-spin">progress_activity</span>
+                              Upgrading…
+                            </>
+                          ) : (
+                            <>
+                              <span className="material-symbols-outlined text-sm">upgrade</span>
+                              Upgrade
+                            </>
+                          )}
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 )

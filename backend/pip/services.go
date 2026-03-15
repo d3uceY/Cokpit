@@ -4,8 +4,11 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
+	"io"
+	"net/http"
 	"os/exec"
 	"strings"
+	"sync"
 )
 
 // OutdatedPackage represents a pip package that has a newer version available.
@@ -13,7 +16,8 @@ type OutdatedPackage struct {
 	Name          string `json:"name"`
 	Version       string `json:"version"`
 	LatestVersion string `json:"latestVersion"`
-	BumpType      string `json:"bumpType"` // "major" | "minor" | "patch"
+	BumpType      string `json:"bumpType"`     // "major" | "minor" | "patch"
+	ChangelogURL  string `json:"changelogUrl"` // URL to the package changelog, if available
 }
 
 // PipPackage represents an installed pip package with its metadata.
@@ -54,6 +58,40 @@ func python(args ...string) *exec.Cmd {
 	return cmd
 }
 
+// pypiInfoResponse is used to parse the changelog URL from the PyPI JSON API.
+type pypiInfoResponse struct {
+	Info struct {
+		ProjectURLs map[string]string `json:"project_urls"`
+	} `json:"info"`
+}
+
+// fetchChangelogURL queries the PyPI JSON API for a package and returns the
+// changelog URL from project_urls, or an empty string if not found.
+func fetchChangelogURL(name string) string {
+	resp, err := http.Get("https://pypi.org/pypi/" + name + "/json")
+	if err != nil || resp.StatusCode != http.StatusOK {
+		return ""
+	}
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return ""
+	}
+	var info pypiInfoResponse
+	if err := json.Unmarshal(body, &info); err != nil {
+		return ""
+	}
+	for key, url := range info.Info.ProjectURLs {
+		if strings.Contains(strings.ToLower(key), "changelog") ||
+			strings.Contains(strings.ToLower(key), "change log") ||
+			strings.Contains(strings.ToLower(key), "changes") ||
+			strings.Contains(strings.ToLower(key), "release notes") {
+			return url
+		}
+	}
+	return ""
+}
+
 // GetOutdatedPackages returns packages that have a newer version available on PyPI.
 func GetOutdatedPackages() ([]OutdatedPackage, error) {
 	out, err := pip("list", "--outdated", "--format=json").Output()
@@ -73,6 +111,16 @@ func GetOutdatedPackages() ([]OutdatedPackage, error) {
 			BumpType:      classifyBump(e.Version, e.LatestVersion),
 		}
 	}
+	// Fetch changelog URLs concurrently from PyPI.
+	var wg sync.WaitGroup
+	for i := range packages {
+		wg.Add(1)
+		go func(i int) {
+			defer wg.Done()
+			packages[i].ChangelogURL = fetchChangelogURL(packages[i].Name)
+		}(i)
+	}
+	wg.Wait()
 	return packages, nil
 }
 
