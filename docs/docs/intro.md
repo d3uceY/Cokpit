@@ -2,46 +2,55 @@
 sidebar_position: 1
 ---
 
-# Tutorial Intro
+# Introduction
 
-Let's discover **Docusaurus in less than 5 minutes**.
+<div align="center">
+  <img src="/img/appicon.png" alt="Cokpyt icon" width="96" />
+</div>
 
-## Getting Started
+<br />
 
-Get started by **creating a new site**.
+**Cokpyt** is a lightweight, fast desktop application that gives you a complete graphical interface over `pip` and the PyPI ecosystem — without ever touching the command line.
 
-Or **try Docusaurus immediately** with **[docusaurus.new](https://docusaurus.new)**.
+<div align="center">
+  <img src="/img/hero.png" alt="Cokpyt hero screenshot" style={{borderRadius: '8px', boxShadow: '0 4px 24px rgba(0,0,0,0.15)'}} />
+</div>
 
-### What you'll need
+<br />
 
-- [Node.js](https://nodejs.org/en/download/) version 20.0 or above:
-  - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
+## Why Cokpyt?
 
-## Generate a new site
+You work in Python. You use `pip`. But every time you need to manage your packages you are back in a terminal window, squinting at walls of text and trying to remember whether it was `pip list --outdated` or `pip list -o`.
 
-Generate a new Docusaurus site using the **classic template**.
+**Cokpyt is the GUI you always wished pip shipped with.**
 
-The classic template will automatically be added to your project after you run the command:
+Built with Go and React on top of the [Wails](https://wails.io) framework, it puts your entire Python environment on a clear dashboard. Browse every installed package, search all of PyPI, install and upgrade and uninstall with a click, run a full environment health check, and see a logged history of every pip action you have ever taken.
 
-```bash
-npm init docusaurus@latest my-website classic
-```
+## Feature Overview
 
-You can type this command into Command Prompt, Powershell, Terminal, or any other integrated terminal of your code editor.
+| Feature | What it does |
+|---|---|
+| [Dashboard](./features/dashboard) | Real-time overview of your environment: total packages, pending updates, Python & pip versions, recent activity |
+| [Installed Packages](./features/installed-packages) | Browse, filter, install, uninstall, and bulk-manage every package in your environment |
+| [Updates](./features/updates) | See every outdated package with version diffs; upgrade one or all at once |
+| [Search](./features/search) | Query PyPI instantly and install any result with one click |
+| [Doctor](./features/doctor) | Health check for Python, pip, and PyPI connectivity with actionable fix hints |
+| [History](./features/history) | Permanent audit trail of every install, upgrade, and uninstall with timestamps |
+| [Cleanup](./features/cleanup) | Reclaim disk space by clearing pip caches, `.egg-info` dirs, and `__pycache__` folders |
+| [Logs](./features/logs) | Raw pip output streamed live; browsable by severity after the fact |
+| [Settings](./features/settings) | Toggle light/dark theme and replay the guided tour |
 
-The command also installs all necessary dependencies you need to run Docusaurus.
+## Tech Stack
 
-## Start your site
+Cokpyt is built on a modern, open-source stack:
 
-Run the development server:
+- **[Wails v2](https://wails.io)** — Go backend, web frontend, one native binary per platform
+- **[React](https://react.dev) + [TypeScript](https://www.typescriptlang.org)** — frontend UI
+- **[TanStack Query](https://tanstack.com/query)** — data fetching and cache invalidation
+- **[Tailwind CSS](https://tailwindcss.com)** — utility-first styling
 
-```bash
-cd my-website
-npm run start
-```
+## Next Steps
 
-The `cd` command changes the directory you're working with. In order to work with your newly created Docusaurus site, you'll need to navigate the terminal there.
-
-The `npm run start` command builds your website locally and serves it through a development server, ready for you to view at http://localhost:3000/.
-
-Open `docs/intro.md` (this page) and edit some lines: the site **reloads automatically** and displays your changes.
+- **[Installation](./installation)** — download the binary or install via `pip`
+- **[Dashboard](./features/dashboard)** — first page you'll see when you open the app
+- **[Contributing](./contributing)** — set up a dev environment and send a pull request

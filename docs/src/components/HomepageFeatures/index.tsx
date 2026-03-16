@@ -11,32 +11,37 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
   {
-    title: 'Easy to Use',
+    title: 'Full pip Control — No Terminal Required',
     Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+        Install, upgrade, and uninstall packages from a clean table view. Filter
+        by name, bulk-select for mass removal, and watch live pip output stream
+        right inside the app — all with a click.
       </>
     ),
   },
   {
-    title: 'Focus on What Matters',
+    title: 'Instant PyPI Search & Health Checks',
     Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+        Query the entire PyPI index in real time and install any result
+        directly. Run the built-in <strong>Doctor</strong> to verify Python,
+        pip, and PyPI connectivity, and get plain-English fix hints when
+        something is wrong.
       </>
     ),
   },
   {
-    title: 'Powered by React',
+    title: 'History, Logs & Cleanup — Built In',
     Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+        Every action is logged with a timestamp and exit status so you always
+        know what changed and when. Reclaim disk space by clearing pip caches,{' '}
+        <code>.egg-info</code> dirs, and <code>__pycache__</code> folders in
+        one click.
       </>
     ),
   },
