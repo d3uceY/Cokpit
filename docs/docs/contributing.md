@@ -1,10 +1,10 @@
----
+﻿---
 sidebar_position: 4
 ---
 
 # Contributing
 
-Contributions to Cokpyt are very welcome — whether that is a bug report, a feature suggestion, a documentation fix, or a pull request.
+Contributions to Cokpyt are very welcome - whether that is a bug report, a feature suggestion, a documentation fix, or a pull request.
 
 ---
 
@@ -79,18 +79,18 @@ wails build --target linux/amd64
 
 ```
 Cokpyt/
-  app.go                  — Wails app lifecycle and method bindings
-  main.go                 — Entry point
+  app.go                  - Wails app lifecycle and method bindings
+  main.go                 - Entry point
   backend/
-    pip/                  — All Go logic: package management, doctor, history, cleanup, search
+    pip/                  - All Go logic: package management, doctor, history, cleanup, search
   frontend/
     src/
-      pages/              — One file per page (Dashboard, InstalledPackages, Search, …)
-      components/         — Shared UI components (layout, sidebar, terminal panel)
-      lib/                — Utility functions
-    wailsjs/              — Auto-generated Go bindings (do not edit by hand)
+      pages/              - One file per page (Dashboard, InstalledPackages, Search, …)
+      components/         - Shared UI components (layout, sidebar, terminal panel)
+      lib/                - Utility functions
+    wailsjs/              - Auto-generated Go bindings (do not edit by hand)
   build/
-    windows/installer/    — NSIS installer script
+    windows/installer/    - NSIS installer script
 ```
 
 The Go backend exposes functions through Wails bindings. The React frontend calls them via `wailsjs/go/main/App`. If you add a new Go method to `App`, regenerate the bindings:
@@ -118,7 +118,7 @@ wails generate module
 4. Commit with a clear message describing what changed and why.
 5. Push your branch and open a pull request against `main`. Link any related issues in the PR description.
 
-Keep pull requests focused — one fix or feature per PR is much easier to review.
+Keep pull requests focused - one fix or feature per PR is much easier to review.
 
 ---
 
@@ -126,7 +126,7 @@ Keep pull requests focused — one fix or feature per PR is much easier to revie
 
 ### Go
 
-- Follow standard Go formatting — run `gofmt` before committing.
+- Follow standard Go formatting - run `gofmt` before committing.
 - Return errors rather than panicking in library code.
 
 ### TypeScript / React

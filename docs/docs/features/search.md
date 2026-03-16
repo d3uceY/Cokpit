@@ -1,10 +1,10 @@
----
+﻿---
 sidebar_position: 4
 ---
 
 # Search
 
-The **Search** page lets you query the entire PyPI index in real time and install any result directly from the app — no separate browser tab or terminal window needed.
+The **Search** page lets you query the entire PyPI index in real time and install any result directly from the app - no separate browser tab or terminal window needed.
 
 ![Search page](/img/search.png)
 
@@ -37,6 +37,6 @@ Once installed, the package appears on the [Installed Packages](./installed-pack
 
 ## Tips
 
-- **Exact name search** — searching for the full package name (e.g. `requests`) gives the most precise results.
-- **Keyword search** — broader terms (e.g. `http client`) return multiple packages, useful when you are evaluating alternatives.
-- **Version pinning** — installing from Search always installs the latest version. To install a specific version, use the **pip install** dialog on the [Installed Packages](./installed-packages) page and add a version specifier (e.g. `requests==2.28.0`).
+- **Exact name search** - searching for the full package name (e.g. `requests`) gives the most precise results.
+- **Keyword search** - broader terms (e.g. `http client`) return multiple packages, useful when you are evaluating alternatives.
+- **Version pinning** - installing from Search always installs the latest version. To install a specific version, use the **pip install** dialog on the [Installed Packages](./installed-packages) page and add a version specifier (e.g. `requests==2.28.0`).

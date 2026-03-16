@@ -1,4 +1,4 @@
----
+﻿---
 sidebar_position: 2
 ---
 
@@ -23,7 +23,7 @@ Browse all release notes and older versions on the [Releases page](https://githu
 
 ### Windows
 
-Run the `.exe` installer and follow the on-screen steps. No additional dependencies are required — the Go runtime is compiled in.
+Run the `.exe` installer and follow the on-screen steps. No additional dependencies are required - the Go runtime is compiled in.
 
 ### macOS
 

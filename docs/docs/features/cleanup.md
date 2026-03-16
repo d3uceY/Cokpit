@@ -1,10 +1,10 @@
----
+﻿---
 sidebar_position: 7
 ---
 
 # Cleanup
 
-The **Cleanup** page scans your system for disk space that pip has accumulated over time — download caches, build artefacts, and bytecode directories — and lets you delete them selectively or all at once.
+The **Cleanup** page scans your system for disk space that pip has accumulated over time - download caches, build artefacts, and bytecode directories - and lets you delete them selectively or all at once.
 
 ![Cleanup page](/img/cleanup.png)
 
@@ -32,9 +32,9 @@ Cokpyt deletes the selected artefacts and displays a summary showing **how much 
 
 ## Safety Notes
 
-- **pip cache** — safe to delete at any time. pip will re-download packages if needed; you just lose the offline-install speedup.
-- **`.egg-info` directories** — safe to delete for packages that are no longer under active development on your machine. Editable installs may regenerate them on the next import.
-- **`__pycache__` folders** — safe to delete at any time. Python regenerates `.pyc` files on demand; you may notice a one-time slowdown on the next import.
+- **pip cache** - safe to delete at any time. pip will re-download packages if needed; you just lose the offline-install speedup.
+- **`.egg-info` directories** - safe to delete for packages that are no longer under active development on your machine. Editable installs may regenerate them on the next import.
+- **`__pycache__` folders** - safe to delete at any time. Python regenerates `.pyc` files on demand; you may notice a one-time slowdown on the next import.
 
 :::tip
 Running Cleanup periodically (especially after removing many packages) is a quick way to reclaim gigabytes on developer machines.

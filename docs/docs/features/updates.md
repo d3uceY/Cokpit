@@ -1,4 +1,4 @@
----
+﻿---
 sidebar_position: 3
 ---
 
@@ -19,16 +19,16 @@ Each row represents one outdated package and shows:
 | **Name** | Package name |
 | **Installed** | Version currently in your environment |
 | **Latest** | Newest version available on PyPI |
-| **Type** | Bump classification — **Major**, **Minor**, or **Patch** |
+| **Type** | Bump classification - **Major**, **Minor**, or **Patch** |
 | **Actions** | Per-row **Upgrade** button |
 
 ### Bump Classification
 
 Cokpyt classifies each available upgrade by its [semantic version](https://semver.org) distance:
 
-- **Major** — the leftmost version number changes (e.g. `1.9.0 → 2.0.0`). May contain breaking changes; read the package's changelog before upgrading.
-- **Minor** — the middle number changes (e.g. `1.3.0 → 1.4.0`). Usually backward-compatible new features.
-- **Patch** — the rightmost number changes (e.g. `1.3.2 → 1.3.3`). Generally safe; typically bug fixes and security patches.
+- **Major** - the leftmost version number changes (e.g. `1.9.0 → 2.0.0`). May contain breaking changes; read the package's changelog before upgrading.
+- **Minor** - the middle number changes (e.g. `1.3.0 → 1.4.0`). Usually backward-compatible new features.
+- **Patch** - the rightmost number changes (e.g. `1.3.2 → 1.3.3`). Generally safe; typically bug fixes and security patches.
 
 ---
 

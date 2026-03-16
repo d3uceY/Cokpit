@@ -1,4 +1,4 @@
----
+﻿---
 sidebar_position: 9
 ---
 
@@ -18,7 +18,7 @@ A screenshot of the Settings page will be added here.
 
 ### Theme
 
-Toggle between **Light** and **Dark** mode using the two theme buttons. Your selection is saved and applied immediately — no restart needed.
+Toggle between **Light** and **Dark** mode using the two theme buttons. Your selection is saved and applied immediately - no restart needed.
 
 Cokpyt also respects your operating system's preferred color scheme on first launch. You can override it here at any time.
 
@@ -28,7 +28,7 @@ Cokpyt also respects your operating system's preferred color scheme on first lau
 
 ### What the Tour Does
 
-The guided tour is a step-by-step walkthrough of Cokpyt's main features. It highlights each section of the sidebar in sequence and briefly explains what that page does. It runs entirely inside the app — no external browser needed.
+The guided tour is a step-by-step walkthrough of Cokpyt's main features. It highlights each section of the sidebar in sequence and briefly explains what that page does. It runs entirely inside the app - no external browser needed.
 
 ### Running the Tour
 
@@ -46,4 +46,4 @@ You can exit the tour at any point by pressing **Escape** or clicking outside th
 
 ### Re-running the Tour
 
-The tour can be replayed as many times as you like — it never locks or marks itself as "completed". Useful if you've just onboarded a new team member or returned to Cokpyt after a long break.
+The tour can be replayed as many times as you like - it never locks or marks itself as "completed". Useful if you've just onboarded a new team member or returned to Cokpyt after a long break.

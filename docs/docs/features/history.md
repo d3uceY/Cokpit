@@ -1,4 +1,4 @@
----
+﻿---
 sidebar_position: 6
 ---
 
@@ -32,10 +32,10 @@ Click any row to expand it and see the **full pip command** that was executed. T
 
 Use the tab bar at the top of the page to filter the list:
 
-- **All** — shows every entry
-- **Install** — shows only install actions
-- **Upgrade** — shows only upgrade actions
-- **Uninstall** — shows only uninstall actions
+- **All** - shows every entry
+- **Install** - shows only install actions
+- **Upgrade** - shows only upgrade actions
+- **Uninstall** - shows only uninstall actions
 
 ---
 
@@ -47,7 +47,7 @@ Click the **Export CSV** button in the page header to download the entire histor
 
 ## Clearing the History
 
-Click **Clear All** in the page header to wipe the history log. Because this is irreversible, Cokpyt requires a **two-step confirmation** — a dialog will appear asking you to confirm before any data is deleted.
+Click **Clear All** in the page header to wipe the history log. Because this is irreversible, Cokpyt requires a **two-step confirmation** - a dialog will appear asking you to confirm before any data is deleted.
 
 :::caution
 Clearing history is permanent. Export to CSV first if you want to keep a copy.

@@ -1,4 +1,4 @@
----
+﻿---
 sidebar_position: 5
 ---
 
@@ -23,7 +23,7 @@ Navigate to **Doctor** and click **Re-run checks**. Cokpyt will execute each dia
 | **Python reachable** | `python` (or `python3`) is on the system `$PATH` and returns a version string |
 | **pip installed** | `pip` is importable and returns a version |
 | **pip up to date** | Your pip version is current; warns if a newer version is available |
-| **PyPI connectivity** | The machine can reach `https://pypi.org` — catches firewall or proxy issues |
+| **PyPI connectivity** | The machine can reach `https://pypi.org` - catches firewall or proxy issues |
 | **Virtual environment** | Whether a `venv` / `virtualenv` is currently active (informational) |
 
 ---
@@ -44,8 +44,8 @@ Each check resolves to one of three states:
 
 Any **Warning** or **Failed** check includes:
 
-1. **Plain-English explanation** — what exactly went wrong
-2. **Concrete suggestion** — the specific command or setting change that should resolve it
+1. **Plain-English explanation** - what exactly went wrong
+2. **Concrete suggestion** - the specific command or setting change that should resolve it
 
 For example, if pip is outdated the hint might read:
 
@@ -55,12 +55,12 @@ For example, if pip is outdated the hint might read:
 
 ## When to Use Doctor
 
-- **First run** — after installing Cokpyt, run Doctor to confirm the environment is set up correctly.
-- **After switching environments** — if you activate a different `venv`, run Doctor to verify the new environment is healthy.
-- **Debugging** — if an install or search fails unexpectedly, Doctor's PyPI connectivity check quickly rules out network issues.
+- **First run** - after installing Cokpyt, run Doctor to confirm the environment is set up correctly.
+- **After switching environments** - if you activate a different `venv`, run Doctor to verify the new environment is healthy.
+- **Debugging** - if an install or search fails unexpectedly, Doctor's PyPI connectivity check quickly rules out network issues.
 
 ---
 
 ## Manual Verification
 
-The Doctor page is read-only — it only runs diagnostics. It never modifies your environment. If a check suggests running a command (e.g. upgrading pip), execute that command in a terminal and then click **Re-run checks** to confirm the fix worked.
+The Doctor page is read-only - it only runs diagnostics. It never modifies your environment. If a check suggests running a command (e.g. upgrading pip), execute that command in a terminal and then click **Re-run checks** to confirm the fix worked.

@@ -1,4 +1,4 @@
----
+﻿---
 sidebar_position: 8
 ---
 
@@ -16,7 +16,7 @@ Each log entry shows:
 
 | Field | Description |
 |---|---|
-| **Level** | Severity badge — `INFO`, `WARN`, or `ERROR` |
+| **Level** | Severity badge - `INFO`, `WARN`, or `ERROR` |
 | **Timestamp** | When the log entry was recorded |
 | **Message** | The raw output line from pip or the Cokpyt backend |
 
@@ -26,9 +26,9 @@ Each log entry shows:
 
 | Level | Meaning |
 |---|---|
-| `INFO` | Normal operations — package resolved, command started, operation completed |
-| `WARN` | Something noteworthy that didn't stop the operation — deprecated API usage, missing optional dependency |
-| `ERROR` | An operation failed — pip returned a non-zero exit code, a network request timed out, etc. |
+| `INFO` | Normal operations - package resolved, command started, operation completed |
+| `WARN` | Something noteworthy that didn't stop the operation - deprecated API usage, missing optional dependency |
+| `ERROR` | An operation failed - pip returned a non-zero exit code, a network request timed out, etc. |
 
 ---
 
@@ -40,9 +40,9 @@ The **live terminal panel** that slides up during installs and upgrades shows th
 
 ## When to Use Logs
 
-- **Debugging a failed install** — look for `ERROR` entries and read the full pip traceback.
-- **Verifying what ran** — confirm the exact pip command and flags that were used.
-- **Reporting a bug** — copy the relevant log entries into a [GitHub issue](https://github.com/d3uceY/Cokpyt/issues) to help with diagnosis.
+- **Debugging a failed install** - look for `ERROR` entries and read the full pip traceback.
+- **Verifying what ran** - confirm the exact pip command and flags that were used.
+- **Reporting a bug** - copy the relevant log entries into a [GitHub issue](https://github.com/d3uceY/Cokpyt/issues) to help with diagnosis.
 
 ---
 

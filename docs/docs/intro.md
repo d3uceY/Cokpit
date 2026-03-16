@@ -1,4 +1,4 @@
----
+﻿---
 sidebar_position: 1
 ---
 
@@ -10,7 +10,7 @@ sidebar_position: 1
 
 <br />
 
-**Cokpyt** is a lightweight, fast desktop application that gives you a complete graphical interface over `pip` and the PyPI ecosystem — without ever touching the command line.
+**Cokpyt** is a lightweight, fast desktop application that gives you a complete graphical interface over `pip` and the PyPI ecosystem - without ever touching the command line.
 
 <div align="center">
   <img src={require('/img/hero.png').default} alt="Cokpyt hero screenshot" style={{borderRadius: '8px', boxShadow: '0 4px 24px rgba(0,0,0,0.15)'}} />
@@ -44,13 +44,13 @@ Built with Go and React on top of the [Wails](https://wails.io) framework, it pu
 
 Cokpyt is built on a modern, open-source stack:
 
-- **[Wails v2](https://wails.io)** — Go backend, web frontend, one native binary per platform
-- **[React](https://react.dev) + [TypeScript](https://www.typescriptlang.org)** — frontend UI
-- **[TanStack Query](https://tanstack.com/query)** — data fetching and cache invalidation
-- **[Tailwind CSS](https://tailwindcss.com)** — utility-first styling
+- **[Wails v2](https://wails.io)** - Go backend, web frontend, one native binary per platform
+- **[React](https://react.dev) + [TypeScript](https://www.typescriptlang.org)** - frontend UI
+- **[TanStack Query](https://tanstack.com/query)** - data fetching and cache invalidation
+- **[Tailwind CSS](https://tailwindcss.com)** - utility-first styling
 
 ## Next Steps
 
-- **[Installation](./installation)** — download the binary or install via `pip`
-- **[Dashboard](./features/dashboard)** — first page you'll see when you open the app
-- **[Contributing](./contributing)** — set up a dev environment and send a pull request
+- **[Installation](./installation)** - download the binary or install via `pip`
+- **[Dashboard](./features/dashboard)** - first page you'll see when you open the app
+- **[Contributing](./contributing)** - set up a dev environment and send a pull request

@@ -1,4 +1,4 @@
----
+﻿---
 sidebar_position: 1
 ---
 
@@ -40,9 +40,9 @@ Click any row to jump to the full entry on the History page.
 
 On the right side of the page is a breakdown of outdated packages grouped by **bump type**:
 
-- **Major** — packages where the next version increments the first digit (e.g. `1.x.x → 2.0.0`)
-- **Minor** — second-digit bumps (e.g. `1.3.x → 1.4.0`)
-- **Patch** — third-digit bumps (e.g. `1.3.2 → 1.3.3`)
+- **Major** - packages where the next version increments the first digit (e.g. `1.x.x → 2.0.0`)
+- **Minor** - second-digit bumps (e.g. `1.3.x → 1.4.0`)
+- **Patch** - third-digit bumps (e.g. `1.3.2 → 1.3.3`)
 
 This makes it easy to decide which upgrades are safe to apply right now versus which ones deserve a closer look.
 
