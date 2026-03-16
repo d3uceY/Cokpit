@@ -5,7 +5,7 @@ sidebar_position: 1
 # Introduction
 
 <div align="center">
-  <img src="/img/appicon.png" alt="Cokpyt icon" width="96" />
+  <img src={require('/img/appicon.png').default} alt="Cokpyt icon" width="96" />
 </div>
 
 <br />
@@ -13,7 +13,7 @@ sidebar_position: 1
 **Cokpyt** is a lightweight, fast desktop application that gives you a complete graphical interface over `pip` and the PyPI ecosystem — without ever touching the command line.
 
 <div align="center">
-  <img src="/img/hero.png" alt="Cokpyt hero screenshot" style={{borderRadius: '8px', boxShadow: '0 4px 24px rgba(0,0,0,0.15)'}} />
+  <img src={require('/img/hero.png').default} alt="Cokpyt hero screenshot" style={{borderRadius: '8px', boxShadow: '0 4px 24px rgba(0,0,0,0.15)'}} />
 </div>
 
 <br />
