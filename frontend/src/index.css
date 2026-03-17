@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@import "material-symbols/outlined.css";
+@import "@fontsource-variable/space-grotesk";
 
 /* Brand colors */
 @theme inline {
@@ -85,7 +87,7 @@
 }
 
 @theme inline {
-    --font-sans: 'Space Grotesk', sans-serif;
+    --font-sans: 'Space Grotesk Variable', sans-serif;
     --color-sidebar-ring: var(--sidebar-ring);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -144,7 +146,7 @@
   border-radius: 0 !important;
   border: 1px solid rgba(0, 0, 0, 0.12) !important;
   background: #ffffff !important;
-  font-family: 'Space Grotesk', sans-serif !important;
+  font-family: 'Space Grotesk Variable', sans-serif !important;
   padding: 20px !important;
   min-width: 270px !important;
   max-width: 320px !important;
