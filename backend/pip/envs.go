@@ -3,8 +3,10 @@ package pip
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"runtime"
+	"strings"
 )
 
 // venvPythonExe returns the path to the python executable inside a venv.
@@ -17,9 +19,26 @@ func venvPythonExe(venvPath string) string {
 
 // getPythonExe returns the python executable for the currently active environment.
 // Falls back to the plain "python" command when no venv is active.
+// On Windows it guards against the Microsoft Store app stub: if "python" resolves
+// to a path under %LOCALAPPDATA%\Microsoft\WindowsApps the stub would open the
+// Store UI instead of running Python. In that case an empty string is returned so
+// callers fail fast with an error rather than spawning Store pop-up windows.
 func getPythonExe() string {
 	cfg, err := GetConfig()
 	if err != nil || cfg.ActiveEnv == "" {
+		if runtime.GOOS == "windows" {
+			if resolved, lErr := exec.LookPath("python"); lErr == nil {
+				localAppData := os.Getenv("LOCALAPPDATA")
+				if localAppData != "" {
+					windowsApps := filepath.Join(localAppData, "Microsoft", "WindowsApps")
+					if strings.HasPrefix(strings.ToLower(resolved), strings.ToLower(windowsApps)) {
+						// Store stub detected — returning empty string causes all
+						// subprocess calls to fail immediately without opening the Store.
+						return ""
+					}
+				}
+			}
+		}
 		return "python"
 	}
 	return venvPythonExe(cfg.ActiveEnv)
