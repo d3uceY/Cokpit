@@ -41,14 +41,6 @@ Grab the latest installer for your platform below.
 
 Or browse all releases and release notes on the [Releases page](https://github.com/d3uceY/Cokpyt/releases).
 
-### Install via pip
-
-You can also install the companion package directly from PyPI:
-
-```bash
-python -m pip install cokpyt
-```
-
 ---
 
 ## Features at a Glance
